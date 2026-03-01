@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ESL Flashcards: Simple Past (A1/A2)</title>
+<style>
+  body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: #f4f7fb;
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.4rem;
+  margin-bottom: 25px;
+  color: #2d3748;
+}
+
+.card {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  padding: 0;
+  font-size: 2rem;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  cursor: pointer;
+  
+  transition: transform 0.7s cubic-bezier(.22,.61,.36,1);
+  transform-style: preserve-3d;
+}
+
+.face {
+  backface-visibility: hidden;
+  transition: transform 0.7s cubic-bezier(.22,.61,.36,1);
+  padding: 60px 30px;
+  box-sizing: border-box;
+}
+
+.front {
+  transform: rotateY(0deg);
+}
+
+.back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+}
+
+.card.is-flipped .front {
+  transform: rotateY(180deg);
+}
+
+.card.is-flipped .back {
+  transform: rotateY(0deg);
+}
+
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+}
+
+button {
+  background: white;
+  border: 2px solid #dbe3f0;
+  border-radius: 14px;
+  padding: 12px 20px;
+  margin: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background: #edf2f7;
+}
+
+button.active {
+  background: #4f46e5;
+  color: white;
+  border-color: #4f46e5;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+}
+
+.label-regular {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.label-irregular {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.app {
+  max-width: 720px;
+  width: 100%;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.sub {
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.badge {
+  background: #4f46e5;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.card-wrap {
+  perspective: 1200px;
+}
+
+.label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.verb-type {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.word {
+  font-size: 2.6rem;
+  margin: 10px 0 14px;
+ 
+  color: #111827;
+}
+
+.example {
+  font-size: 1.15rem;
+  color: #374151;
+  margin-top: 8px;
+}
+
+.hint {
+  font-size: 0.8rem;
+  margin-top: 20px;
+  color: #9ca3af;
+}
+
+.controls {
+  margin-top: 20px;
+}
+
+.btns {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.primary {
+  background: #4f46e5;
+  color: white;
+  border-color: #4f46e5;
+}
+
+.primary:hover {
+  background: #4338ca;
+}
+
+.progress {
+  margin-top: 10px;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.card.regular { background: #d1fae5; }   /* soft green */
+.card.irregular { background: #fee2e2; } /* soft red */
+
+</style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Simple Past Flashcards</h1>
+        <p class="sub">A1/A2 practice • Click the card to flip</p>
+      </div>
+      <span class="badge" id="counter">1 / 12</span>
+    </header>
+    
+    <div id="verb-type-controls">
+        <button id="irregularBtn" onclick="setVerbType('irregular')">Irregular</button>
+<button id="regularBtn" onclick="setVerbType('regular')">Regular</button>
+<button id="mixedBtn" onclick="setVerbType('mixed')">Mixed</button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card" id="card" tabindex="0">
+        <!-- FRONT -->
+        <section class="face front">
+          <div class="label">Present (base form)</div>
+          <div class="verb-type">Irregular verb</div>
+          <h2 class="word"><b id="frontVerb">go</b><button onclick="speakText('frontVerb', event)" title="Listen">🔊</button></h2>
+
+        <p class="example"><span id="frontExample">I go to work every day.</span><button onclick="speakText('frontExample', event)" title="Listen">🔊</button></p>
+        
+          <div class="hint">Click to flip • <kbd>Space</kbd> • <kbd>→</kbd>/<kbd>←</kbd></div>
+        </section>
+
+        <!-- BACK -->
+        <section class="face back">
+          <div class="label">Simple past</div>
+          <div class="verb-type">Irregular verb</div>
+          <h2 class="word"><b id="backVerb">went</b><button onclick="speakText('backVerb', event)" title="Listen">🔊</button></h2>
+        
+            <p class ="example"><span id="pastExample">Yesterday, I went to work.</span><button onclick="speakText('pastExample', event)" title="Listen">🔊</button></p>
+          
+          <div class="hint">Use the simple past for finished actions in the past</div>
+        </section>
+      </div>
+    </div>
+    
+<div id="quiz" style="display:none;">
+    
+  <p><strong>Choose the past form:</strong></p>
+  <p class="progress" id="quizCounter">Question 1 / 12</p>
+  <div id="progress"></div>
+  <p id="quizPrompt"></p>
+
+  <div id="choices"></div>
+
+  <p id="feedback" style="margin-top:10px;"></p>
+
+  <!-- QUIZ CONTROLS -->
+  <div class="btns" style="margin-top:16px;">
+    <button id="quizPrev">← Previous</button>
+    <button id="quizNext">Next →</button>
+  </div>
+</div>
+
+
+    <div class="controls">
+      <div class="btns" id="cardControls">
+        <button id="prev">← Previous</button>
+        <button class="primary" id="flip">Flip</button>
+        <button id="next">Next →</button>
+      </div>
+      <div class="btns">
+          <button id="modeBtn">Quiz Mode</button>
+      </div>
+      <div class="btns">
+        <button id="shuffle">Shuffle</button>
+        <button id="reset">Reset</button>
+      </div>
+      <div class="progress">
+        Keys: <kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+
+const irregularVerbs = [
+  { base:"go", past:"went",
+    front:"I go to work every day.",
+    back:"Yesterday, I went to work.",
+    type: "irregular"},
+
+  { base:"have", past:"had",
+    front:"I have a car.",
+    back:"Last year, I had a bike.",
+    type: "irregular"},
+
+  { base:"make", past:"made",
+    front:"I make dinner at home.",
+    back:"I made dinner last night.",
+    type: "irregular"},
+
+  { base:"see", past:"saw",
+    front:"I see my friends on weekends.",
+    back:"I saw my friends yesterday.",
+    type: "irregular"},
+
+  { base:"eat", past:"ate",
+    front:"I eat lunch at noon.",
+    back:"I ate lunch at 12.",
+    type: "irregular"},
+
+  { base:"take", past:"took",
+    front:"I take the bus to work.",
+    back:"I took the bus yesterday.",
+    type: "irregular"},
+
+  { base:"come", past:"came",
+    front:"I come home at 6 p.m.",
+    back:"I came home late yesterday.",
+    type: "irregular"},
+
+  { base:"do", past:"did",
+    front:"I do my homework at night.",
+    back:"I did my homework yesterday.",
+    type: "irregular"},
+
+  { base:"get", past:"got",
+    front:"I get up at 7 a.m.",
+    back:"I got up early today.",
+      type: "irregular"
+  },
+
+  { base:"give", past:"gave",
+    front:"I give my dog food.",
+    back:"I gave my dog food this morning.",
+    type: "irregular"},
+
+  { base:"buy", past:"bought",
+    front:"I buy coffee every day.",
+    back:"I bought coffee yesterday.",
+    type: "irregular"},
+
+  { base:"say", past:"said",
+    front:"I say hello to my neighbors.",
+    back:"I said hello to her yesterday.",
+    type: "irregular"}
+];
+
+
+const regularVerbs = [
+  {
+    base: "work",
+    past: "worked",
+    front: "I work every day.",
+    back: "Yesterday, I worked.",
+    type: "regular"},
+  {
+    base: "play",
+    past: "played",
+    front: "I play soccer on weekends.",
+    back: "I played soccer last weekend.",
+    type: "regular"}
+];
+
+let cards = [...irregularVerbs];
+let index = 0;
+
+const card = document.getElementById("card");
+const frontVerb = document.getElementById("frontVerb");
+const frontExample = document.getElementById("frontExample");
+const backVerb = document.getElementById("backVerb");
+const pastExample = document.getElementById("pastExample");
+const counter = document.getElementById("counter");
+const quizCounter = document.getElementById("quizCounter");
+
+let mode = "cards"; // "cards" or "quiz"
+
+let verbtype = "irregular";
+let verbs = [...irregularVerbs];
+let currentIndex = 0;
+let quizIndex = 0;
+
+window.setVerbType = function(type) {
+  verbType = type;
+
+  setActiveVerbButton(type);  // 👈 add this line
+
+  if (type === "irregular") {
+    cards = [...irregularVerbs];
+  } else if (type === "regular") {
+    cards = [...regularVerbs];
+  } else {
+    cards = [...irregularVerbs, ...regularVerbs];
+    shuffleCards(cards);
+  }
+
+  index = 0;
+  quizIndex = 0;
+
+  if (mode === "quiz") {
+    loadQuizQuestion();
+  } else {
+    render();
+  }
+};
+
+window.shuffleCards = function(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+};
+
+window.setActiveVerbButton = function(type) {
+  const types = ["irregular", "regular", "mixed"];
+
+  types.forEach(t => {
+    const btn = document.getElementById(t + "Btn");
+    if (btn) {
+      btn.classList.toggle("active", t === type);
+    }
+  });
+};
+
+window.addEventListener("DOMContentLoaded", function() {
+  setActiveVerbButton("irregular");
+});
+
+/*function setVerbType(type) {
+  verbType = type;
+
+  if (type === "irregular") {
+    verbs = [...irregularVerbs];
+  } else if (type === "regular") {
+    verbs = [...regularVerbs];
+  } else if (type === "mixed") {
+    verbs = [...irregularVerbs, ...regularVerbs];
+  }
+
+  // Reset indices
+  currentIndex = 0;
+  quizIndex = 0;
+
+  // Reload depending on current mode
+  if (mode === "quiz") {
+    loadQuizQuestion();
+  } else {
+    render();
+  }
+}*/
+
+
+function render() {
+  const c = cards[index];
+  const labels = document.querySelectorAll(".verb-type");
+  
+function setActiveVerbButton(type) {
+  const types = ["irregular", "regular", "mixed"];
+
+  types.forEach(t => {
+    const btn = document.getElementById(t + "Btn");
+    btn.classList.toggle("active", t === type);
+  });
+}
+
+labels.forEach(label => {
+  label.textContent =
+    c.type === "regular"
+      ? "Regular verb"
+      : "Irregular verb";
+});
+
+card.classList.remove("regular", "irregular");
+card.classList.add(c.type);
+
+  frontVerb.innerHTML = `<b>${c.base}</b>`;
+  backVerb.innerHTML = `<b>${c.past}</b>`;
+
+  frontExample.innerHTML = c.front
+  ? c.front.replace(c.base, `<span class="verb-highlight">${c.base}</span>`)
+  : "";
+
+  pastExample.innerHTML = c.back
+  ? c.back.replace(c.past, `<span class="verb-highlight">${c.past}</span>`)
+  : "";
+  
+
+  counter.textContent = `${index + 1} / ${cards.length}`;
+  card.classList.remove("is-flipped");
+}
+
+
+
+
+function flip(){ card.classList.toggle("is-flipped"); }
+function next(){ index=(index+1)%cards.length; render(); }
+function prev(){ index=(index-1+cards.length)%cards.length; render(); }
+
+function shuffle(){
+  cards.sort(()=>Math.random()-0.5);
+  index=0;
+  render();
+}
+
+function reset(){
+  cards=[...irregularVerbs];
+  index=0;
+  render();
+}
+
+document.getElementById("flip").onclick=flip;
+document.getElementById("next").onclick=next;
+document.getElementById("prev").onclick=prev;
+document.getElementById("shuffle").onclick=shuffle;
+document.getElementById("reset").onclick=reset;
+card.onclick=flip;
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight") next();
+  if(e.key==="ArrowLeft") prev();
+  if(e.key===" ") { e.preventDefault(); flip(); }
+});
+
+document.getElementById("quizNext").onclick = () => {
+  index = (index + 1) % cards.length;
+  loadQuizQuestion();
+};
+
+document.getElementById("quizPrev").onclick = () => {
+  index = (index - 1 + cards.length) % cards.length;
+  loadQuizQuestion();
+};
+
+
+function speak(text, event) {
+  if (event) event.stopPropagation(); // ← stops the flip
+  if (!window.speechSynthesis) return;
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+
+  const voices = speechSynthesis.getVoices();
+  const usVoice = voices.find(v => v.lang === "en-US");
+
+  if (usVoice) utterance.voice = usVoice;
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+function speakText(elementId, event) {
+  if (event) event.stopPropagation();
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  const text = el.textContent.trim();
+  speak(text);
+}
+
+mode = "cards"; // "cards" or "quiz"
+
+const quiz = document.getElementById("quiz");
+const quizPrompt = document.getElementById("quizPrompt");
+const choicesDiv = document.getElementById("choices");
+const feedback = document.getElementById("feedback");
+const modeBtn = document.getElementById("modeBtn");
+
+function showQuiz(){
+  mode = "quiz";
+  quiz.style.display = "block";
+  document.querySelector(".card-wrap").style.display = "none";
+  loadQuizQuestion();
+}
+
+function showCards(){
+  mode = "cards";
+  quiz.style.display = "none";
+  document.querySelector(".card-wrap").style.display = "block";
+}
+
+function loadQuizQuestion(){
+  const c = cards[index];
+  quizCounter.textContent = `Question ${index + 1} / ${cards.length}`;
+  
+  quizPrompt.textContent = `Base verb: "${c.base}"`;
+
+  const options = shuffleArray([
+    c.past,
+    ...getRandomPasts(c.past, 2)
+  ]);
+
+  choicesDiv.innerHTML = "";
+  feedback.textContent = "";
+
+  options.forEach(opt=>{
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = ()=>{
+      feedback.textContent =
+        opt === c.past ? "✅ Correct!" : "❌ Try again.";
+    };
+    choicesDiv.appendChild(btn);
+  });
+}
+
+
+
+function handleAnswer(isCorrect){
+  if (isCorrect) {
+    feedback.textContent = "✅ Correct!";
+  } else {
+    feedback.textContent = "❌ Try again.";
+  }
+}
+
+
+
+function getRandomPasts(correct, n){
+  return cards
+    .map(c=>c.past)
+    .filter(p=>p!==correct)
+    .sort(()=>Math.random()-0.5)
+    .slice(0,n);
+}
+
+function shuffleArray(arr){
+  return [...arr].sort(()=>Math.random()-0.5);
+}
+
+const cardControls = document.getElementById("cardControls");
+
+modeBtn.onclick = () => {
+  if (mode === "cards") {
+    mode = "quiz";
+    modeBtn.textContent = "Flashcards";
+
+    document.querySelector(".card-wrap").style.display = "none";
+    quiz.style.display = "block";
+    cardControls.style.display = "none";
+    index = 0;          // ← RESET TO QUESTION 1
+    loadQuizQuestion();     // ← LOAD FIRST QUIZ QUESTION
+
+    loadQuizQuestion();
+  } else {
+    mode = "cards";
+    modeBtn.textContent = "Quiz Mode";
+
+    quiz.style.display = "none";
+    document.querySelector(".card-wrap").style.display = "block";
+    cardControls.style.display = "flex";
+  }
+};
+
+
+
+render();
+
+</script>
+</body>
+</html>
